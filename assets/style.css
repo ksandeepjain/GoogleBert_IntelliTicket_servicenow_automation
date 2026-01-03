@@ -1,0 +1,11 @@
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: white; /* Adjust background color as needed */
+    color: black; /* Adjust text color as needed */
+    text-align: center;
+    padding: 10px; /* Add some padding */
+    font-size: 14px;
+}
