@@ -150,13 +150,12 @@ if st.button("Submit", type="primary"):
                         st.bar_chart(df_results.set_index('Category'))
                         st.table(df_results)
 
-                    success, ticket_id = submit_to_servicenow(category, ticket_text)
-
+                    success, ticket_info = submit_to_servicenow_pysnow(category, ticket_text)
+        
                     if success:
-                        st.balloons()
-                        st.info(f"Success! ServiceNow Ticket Created: **{ticket_id}**")
+                        st.info(f"Ticket Created: **{ticket_info}**")
                     else:
-                        st.error(f"Failed to submit to ServiceNow: {ticket_id}")
+                        st.error(f"Error: {ticket_info}")
 
 if st.button("Clear Text"):
     st.rerun()
