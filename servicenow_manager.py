@@ -1,28 +1,24 @@
-import requests
-import json
+import pysnow
 
-def submit_to_servicenow(category, description, urgency="2"):
-    # Replace with your actual details
-    instance_url = "https://YOUR_INSTANCE.service-now.com/api/now/table/incident"
-    user = "admin"
-    password = "your_password"
+def submit_to_servicenow_pysnow(category, description):
+    instance = 'your_instance_name' # Just the name, not the full URL
+    user = 'admin'
+    password = 'your_password'
 
-    payload = {
-        "short_description": f"AI Classified: {category}",
-        "description": description,
-        "urgency": urgency,  # 1: High, 2: Medium, 3: Low
-        "assignment_group": "Software" if category == "Technical Issue" else "Customer Support"
+    s = pysnow.Client(instance=instance, user=user, password=password)
+
+    incident = s.resource(api_path='/table/incident')
+
+    new_record = {
+        'short_description': f"AI Classified: {category}",
+        'description': description,
+        'urgency': 2, # Medium
+        'impact': 2,
+        'comments': "Ticket generated automatically by AI Classifier."
     }
 
-    response = requests.post(
-        instance_url,
-        auth=(user, password),
-        headers={"Content-Type": "application/json", "Accept": "application/json"},
-        data=json.dumps(payload)
-    )
-
-    if response.status_code == 201:
-        result = response.json()
-        return True, result['result']['number'] # Returns the Ticket Number (e.g. INC0010001)
-    else:
-        return False, response.text
+    try:
+        result = incident.create(payload=new_record)
+        return True, result['number']
+    except Exception as e:
+        return False, str(e)
